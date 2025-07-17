@@ -1,0 +1,162 @@
+package scenes
+
+import (
+	"app/common"
+	"image/color"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
+)
+
+type Deps struct {
+	Config *common.Config
+}
+
+type StartScene struct {
+	loaded bool
+	deps   *Deps
+
+	// Scene selector
+	selectedScene int
+	scenes        []SceneOption
+}
+
+type SceneOption struct {
+	id   SceneId
+	name string
+}
+
+func NewStartScene(deps *Deps) *StartScene {
+	scenes := []SceneOption{
+		{id: BallsSceneId, name: "Balls Physics Demo"},
+		{id: GravitySceneId, name: "Gravity Demo"},
+		// Add more scenes here as they become available
+	}
+
+	return &StartScene{
+		loaded:        false,
+		deps:          deps,
+		selectedScene: 0,
+		scenes:        scenes,
+	}
+}
+
+func (s *StartScene) Draw(screen *ebiten.Image) {
+	width := float32(s.deps.Config.Render.Window.Width)
+	height := float32(s.deps.Config.Render.Window.Height)
+
+	// Draw gradient background
+	s.drawGradientBackground(screen, width, height)
+
+	// Draw title with shadow and background
+	title := "Infinite Dungeon"
+	titleX := width / 2
+	titleY := height * 0.18
+	titleFontSize := 36
+	titleBoxPadding := 16
+	textW := len(title) * titleFontSize / 2
+	boxW := float32(textW) + float32(titleBoxPadding*2)
+	boxH := float32(titleFontSize) + float32(titleBoxPadding*2)
+	boxX := titleX - boxW/2
+	boxY := titleY - float32(titleBoxPadding)
+	// Draw semi-transparent box
+	ebitenutil.DrawRect(screen, float64(boxX), float64(boxY), float64(boxW), float64(boxH), color.RGBA{0, 0, 0, 180})
+	// Draw shadow
+	ebitenutil.DebugPrintAt(screen, title, int(titleX)-textW/22, int(titleY)+2)
+	// Draw title in white
+	ebitenutil.DebugPrintAt(screen, title, int(titleX)-textW/2, int(titleY))
+
+	// Draw scene selector with background
+	selectorY := height * 0.4
+	selectorBoxW := width * 0.6
+	selectorBoxH := float32(len(s.scenes)*48 + 32)
+	selectorBoxX := width/2 - selectorBoxW/2
+	selectorBoxY := selectorY - 24
+	ebitenutil.DrawRect(screen, float64(selectorBoxX), float64(selectorBoxY), float64(selectorBoxW), float64(selectorBoxH), color.RGBA{0, 0, 0, 160})
+	s.drawSceneSelector(screen, width, height, selectorY)
+
+	// Draw instructions with background
+	instructions := "Use ↑↓ arrows to select, ENTER to start"
+	instructionsX := width / 2
+	instructionsY := height * 0.8
+	instrBoxW := float32(len(instructions)*12 + 32)
+	instrBoxH := float32(32)
+	instrBoxX := instructionsX - instrBoxW/2
+	instrBoxY := instructionsY - 8
+	ebitenutil.DrawRect(screen, float64(instrBoxX), float64(instrBoxY), float64(instrBoxW), float64(instrBoxH), color.RGBA{0, 0, 0, 160})
+	ebitenutil.DebugPrintAt(screen, instructions, int(instructionsX)-len(instructions)*6, int(instructionsY))
+}
+
+func (s *StartScene) drawGradientBackground(screen *ebiten.Image, width, height float32) {
+	topColor := color.RGBA{203, 0, 5, 255}     // Dark blue
+	bottomColor := color.RGBA{80, 20, 10, 255} // Purple
+
+	// Draw gradient by creating multiple rectangles
+	numSteps := 50
+	for i := 0; i < numSteps; i++ {
+		y1 := float32(i) * height / float32(numSteps)
+		y2 := float32(i+1) * height / float32(numSteps)
+
+		// Interpolate colors
+		t := float32(i) / float32(numSteps-1)
+		r := uint8(float32(topColor.R)*(1-t) + float32(bottomColor.R)*t)
+		g := uint8(float32(topColor.G)*(1-t) + float32(bottomColor.G)*t)
+		b := uint8(float32(topColor.B)*(1-t) + float32(bottomColor.B)*t)
+
+		gradientColor := color.RGBA{r, g, b, 255}
+		ebitenutil.DrawRect(screen, float64(0), float64(y1), float64(width), float64(y2-y1), gradientColor)
+	}
+}
+
+func (s *StartScene) drawSceneSelector(screen *ebiten.Image, width, height, startY float32) {
+	spacing := 48
+	for i, scene := range s.scenes {
+		y := startY + float32(i)*float32(spacing)
+		x := width / 2
+		// Draw selection indicator
+		if i == s.selectedScene {
+			// Highlight selected item
+			ebitenutil.DebugPrintAt(screen, ">", int(x)-120, int(y))
+			ebitenutil.DebugPrintAt(screen, "<", int(x)+len(scene.name)*12+8, int(y))
+		}
+		// Draw scene name
+		// (col variable removed, not used)
+		ebitenutil.DebugPrintAt(screen, scene.name, int(x)-len(scene.name)*6, int(y))
+	}
+}
+
+func (s *StartScene) FirstLoad() {
+	s.loaded = true
+}
+
+func (s *StartScene) IsLoaded() bool {
+	return s.loaded
+}
+
+func (s *StartScene) OnEnter() {
+}
+
+func (s *StartScene) OnExit() {
+}
+
+func (s *StartScene) Update() SceneId {
+	// Handle scene selection with arrow keys
+	if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+		s.selectedScene = (s.selectedScene - 1 + len(s.scenes)) % len(s.scenes)
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+		s.selectedScene = (s.selectedScene + 1) % len(s.scenes)
+	}
+
+	// Handle scene selection with enter
+	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+		if len(s.scenes) > 0 {
+			return s.scenes[s.selectedScene].id
+		}
+	}
+
+	return StartSceneId
+}
+
+var _ Scene = (*StartScene)(nil)
