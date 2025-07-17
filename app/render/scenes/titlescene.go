@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 type Deps struct {
@@ -61,7 +62,7 @@ func (s *StartScene) Draw(screen *ebiten.Image) {
 	boxX := titleX - boxW/2
 	boxY := titleY - float32(titleBoxPadding)
 	// Draw semi-transparent box
-	ebitenutil.DrawRect(screen, float64(boxX), float64(boxY), float64(boxW), float64(boxH), color.RGBA{0, 0, 0, 180})
+	vector.DrawFilledRect(screen, boxX, boxY, boxW, boxH, color.RGBA{0, 0, 0, 180}, false)
 	// Draw shadow
 	ebitenutil.DebugPrintAt(screen, title, int(titleX)-textW/22, int(titleY)+2)
 	// Draw title in white
@@ -73,7 +74,7 @@ func (s *StartScene) Draw(screen *ebiten.Image) {
 	selectorBoxH := float32(len(s.scenes)*48 + 32)
 	selectorBoxX := width/2 - selectorBoxW/2
 	selectorBoxY := selectorY - 24
-	ebitenutil.DrawRect(screen, float64(selectorBoxX), float64(selectorBoxY), float64(selectorBoxW), float64(selectorBoxH), color.RGBA{0, 0, 0, 160})
+	vector.DrawFilledRect(screen, selectorBoxX, selectorBoxY, selectorBoxW, selectorBoxH, color.RGBA{0, 0, 0, 160}, false)
 	s.drawSceneSelector(screen, width, height, selectorY)
 
 	// Draw instructions with background
@@ -84,7 +85,7 @@ func (s *StartScene) Draw(screen *ebiten.Image) {
 	instrBoxH := float32(32)
 	instrBoxX := instructionsX - instrBoxW/2
 	instrBoxY := instructionsY - 8
-	ebitenutil.DrawRect(screen, float64(instrBoxX), float64(instrBoxY), float64(instrBoxW), float64(instrBoxH), color.RGBA{0, 0, 0, 160})
+	vector.DrawFilledRect(screen, instrBoxX, instrBoxY, instrBoxW, instrBoxH, color.RGBA{0, 0, 0, 160}, false)
 	ebitenutil.DebugPrintAt(screen, instructions, int(instructionsX)-len(instructions)*6, int(instructionsY))
 }
 
@@ -105,7 +106,7 @@ func (s *StartScene) drawGradientBackground(screen *ebiten.Image, width, height 
 		b := uint8(float32(topColor.B)*(1-t) + float32(bottomColor.B)*t)
 
 		gradientColor := color.RGBA{r, g, b, 255}
-		ebitenutil.DrawRect(screen, float64(0), float64(y1), float64(width), float64(y2-y1), gradientColor)
+		vector.DrawFilledRect(screen, 0, y1, width, y2-y1, gradientColor, false)
 	}
 }
 
