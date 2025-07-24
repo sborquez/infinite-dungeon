@@ -1,18 +1,14 @@
 package scenes
 
 import (
-	"app/common"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	log "github.com/sirupsen/logrus"
 )
-
-type Deps struct {
-	Config *common.Config
-}
 
 type StartScene struct {
 	loaded bool
@@ -29,23 +25,47 @@ type SceneOption struct {
 }
 
 func NewStartScene(deps *Deps) *StartScene {
-	scenes := []SceneOption{
+	log.Info("Creating new start scene (title screen)")
+
+	// Build from deps.Scenes
+	scenesOptions := []SceneOption{
 		{id: BallsSceneId, name: "Balls Physics Demo"},
 		{id: GravitySceneId, name: "Gravity Demo"},
-		// Add more scenes here as they become available
+		{id: ComfyUISceneId, name: "ComfyUI Demo"},
+		{id: GameOverSceneId, name: "Game Over"},
+	}
+
+	log.WithField("available_scenes", len(scenesOptions)).Info("Built scene options from dependencies")
+	for i, option := range scenesOptions {
+		log.WithFields(log.Fields{
+			"index":      i,
+			"scene_id":   option.id,
+			"scene_name": option.name,
+		}).Debug("Added scene option")
 	}
 
 	return &StartScene{
 		loaded:        false,
 		deps:          deps,
 		selectedScene: 0,
-		scenes:        scenes,
+		scenes:        scenesOptions,
 	}
+}
+
+func (s *StartScene) GetName() string {
+	return "Main Menu"
 }
 
 func (s *StartScene) Draw(screen *ebiten.Image) {
 	width := float32(s.deps.Config.Render.Window.Width)
 	height := float32(s.deps.Config.Render.Window.Height)
+
+	log.WithFields(log.Fields{
+		"screen_width":   width,
+		"screen_height":  height,
+		"scene_count":    len(s.scenes),
+		"selected_index": s.selectedScene,
+	}).Trace("Drawing title scene")
 
 	// Draw gradient background
 	s.drawGradientBackground(screen, width, height)
@@ -111,12 +131,25 @@ func (s *StartScene) drawGradientBackground(screen *ebiten.Image, width, height 
 }
 
 func (s *StartScene) drawSceneSelector(screen *ebiten.Image, width, height, startY float32) {
+	log.WithFields(log.Fields{
+		"scene_count":      len(s.scenes),
+		"selected_index":   s.selectedScene,
+		"start_y_position": startY,
+	}).Trace("Drawing scene selector menu")
+
 	spacing := 48
 	for i, scene := range s.scenes {
 		y := startY + float32(i)*float32(spacing)
 		x := width / 2
+
 		// Draw selection indicator
 		if i == s.selectedScene {
+			log.WithFields(log.Fields{
+				"selected_scene":    scene.name,
+				"selected_scene_id": scene.id,
+				"menu_position":     i,
+			}).Trace("Highlighting selected menu item")
+
 			// Highlight selected item
 			ebitenutil.DebugPrintAt(screen, ">", int(x)-120, int(y))
 			ebitenutil.DebugPrintAt(screen, "<", int(x)+len(scene.name)*12+8, int(y))
@@ -128,6 +161,7 @@ func (s *StartScene) drawSceneSelector(screen *ebiten.Image, width, height, star
 }
 
 func (s *StartScene) FirstLoad() {
+	log.WithField("scene", "StartScene").Info("First load of title scene")
 	s.loaded = true
 }
 
@@ -136,24 +170,72 @@ func (s *StartScene) IsLoaded() bool {
 }
 
 func (s *StartScene) OnEnter() {
+	log.WithFields(log.Fields{
+		"scene":            "StartScene",
+		"available_scenes": len(s.scenes),
+		"selected_index":   s.selectedScene,
+	}).Info("Entered title scene")
+
+	if len(s.scenes) > 0 && s.selectedScene < len(s.scenes) {
+		log.WithField("selected_scene", s.scenes[s.selectedScene].name).Debug("Default scene selection")
+	}
 }
 
 func (s *StartScene) OnExit() {
+	log.WithField("scene", "StartScene").Info("Exiting title scene")
 }
 
 func (s *StartScene) Update() SceneId {
+	// Safety check to prevent divide by zero
+	if len(s.scenes) == 0 {
+		log.Warn("No scenes available in title menu, staying on start scene")
+		return StartSceneId
+	}
+
+	// Ensure selectedScene is within bounds
+	if s.selectedScene >= len(s.scenes) {
+		log.WithFields(log.Fields{
+			"current_index": s.selectedScene,
+			"scene_count":   len(s.scenes),
+		}).Warn("Selected scene index out of bounds, resetting to 0")
+		s.selectedScene = 0
+	}
+
 	// Handle scene selection with arrow keys
 	if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+		previousSelection := s.selectedScene
 		s.selectedScene = (s.selectedScene - 1 + len(s.scenes)) % len(s.scenes)
+		log.WithFields(log.Fields{
+			"direction":      "up",
+			"previous_index": previousSelection,
+			"new_index":      s.selectedScene,
+			"selected_scene": s.scenes[s.selectedScene].name,
+		}).Debug("Scene selection changed")
 	}
+
 	if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+		previousSelection := s.selectedScene
 		s.selectedScene = (s.selectedScene + 1) % len(s.scenes)
+		log.WithFields(log.Fields{
+			"direction":      "down",
+			"previous_index": previousSelection,
+			"new_index":      s.selectedScene,
+			"selected_scene": s.scenes[s.selectedScene].name,
+		}).Debug("Scene selection changed")
 	}
 
 	// Handle scene selection with enter
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 		if len(s.scenes) > 0 {
-			return s.scenes[s.selectedScene].id
+			selectedScene := s.scenes[s.selectedScene]
+			log.WithFields(log.Fields{
+				"selected_index":      s.selectedScene,
+				"selected_scene_id":   selectedScene.id,
+				"selected_scene_name": selectedScene.name,
+			}).Info("User selected scene, transitioning")
+			return selectedScene.id
+		} else {
+			log.Warn("Enter pressed but no scenes available")
 		}
 	}
 

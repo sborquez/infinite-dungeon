@@ -53,6 +53,10 @@ func NewBallsScene(deps *Deps) *BallsScene {
 	}
 }
 
+func (s *BallsScene) GetName() string {
+	return "Balls Physics Demo"
+}
+
 func newRandomBall(x, y, radius float32) Ball {
 	speed := 1.5 + rand.Float64()*2.5 // 1.5 to 4.0
 	vx := float32(speed * float64(rand.Float32()*2-1))

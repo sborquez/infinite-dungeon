@@ -66,6 +66,10 @@ func NewGravityScene(deps *Deps) *GravityScene {
 	}
 }
 
+func (s *GravityScene) GetName() string {
+	return "Gravity Demo"
+}
+
 func (s *GravityScene) Draw(screen *ebiten.Image) {
 	width := float64(s.deps.Config.Render.Window.Width)
 	height := float64(s.deps.Config.Render.Window.Height)

@@ -11,6 +11,14 @@ type Config struct {
 		Level string `yaml:"level"`
 	} `yaml:"log"`
 
+	// Engine struct {
+	// 	Database struct {
+	// 		Type          string `yaml:"type"`
+	// 		ConnectionURI string `yaml:"uri"`
+	// 		Name          string `yaml:"name"`
+	// 	} `yaml:"database"`
+	// } `yaml:"engine"`
+
 	Render struct {
 		Window struct {
 			Width      int  `yaml:"width"`
