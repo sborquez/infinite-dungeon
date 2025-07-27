@@ -2,6 +2,7 @@ package scenes
 
 import (
 	"app/common"
+	"app/services"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -30,7 +31,8 @@ type Scene interface {
 }
 
 type Deps struct {
-	Config *common.Config
+	Config  *common.Config
+	ComfyUI *services.ComfyUIService
 }
 
 /*

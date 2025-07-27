@@ -11,6 +11,11 @@ type Config struct {
 		Level string `yaml:"level"`
 	} `yaml:"log"`
 
+	ComfyUI struct {
+		BaseURL        string `yaml:"base_url"`
+		WorkflowFolder string `yaml:"workflow_folder"`
+	} `yaml:"comfyui"`
+
 	// Engine struct {
 	// 	Database struct {
 	// 		Type          string `yaml:"type"`

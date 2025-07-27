@@ -7,6 +7,8 @@ import (
 
 	"app/common"
 	"app/render"
+
+	"app/services"
 )
 
 func main() {
@@ -25,7 +27,11 @@ func main() {
 	common.SetupLogger(config)
 	log.Debug(config)
 
+	// Setup ComfyUI
+	comfyuiService := services.NewComfyUIService(config)
+	comfyuiService.Start()
+
 	// Setup Render
-	game := render.NewGame(config)
+	game := render.NewGame(config, comfyuiService)
 	render.RunGame(game)
 }

@@ -31,3 +31,11 @@ go.work.sum
 # .idea/
 # .vscode/
 *.log
+
+
+# TEMP
+app/assets/python/comfyui.py
+app/config/story.yaml
+app/ollama/
+app/models/
+app/engine/

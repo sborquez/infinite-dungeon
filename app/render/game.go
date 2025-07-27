@@ -12,6 +12,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"app/render/scenes"
+	"app/services"
 )
 
 // Game implements ebiten.Game interface
@@ -29,7 +30,7 @@ type Game struct {
 	shutdown        bool
 }
 
-func NewGame(config *common.Config) *Game {
+func NewGame(config *common.Config, comfyuiService *services.ComfyUIService) *Game {
 	log.Info("Initializing new game instance")
 
 	w := config.Render.Window.Width
@@ -42,7 +43,8 @@ func NewGame(config *common.Config) *Game {
 
 	// Initialize shared dependencies
 	deps := &scenes.Deps{
-		Config: config,
+		Config:  config,
+		ComfyUI: comfyuiService,
 	}
 	log.Debug("Initialized scene dependencies")
 

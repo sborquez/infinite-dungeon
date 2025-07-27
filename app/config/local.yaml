@@ -4,6 +4,10 @@
 #     uri: ./data/infinite-dungeon.db
 #     name: infinite-dungeon
 
+comfyui:
+  base_url: http://localhost:8000
+  workflow_folder: /Users/sebas/Projects/infinite-dungeon/app/assets/workflows
+
 render:
   window:
     width: 1920
