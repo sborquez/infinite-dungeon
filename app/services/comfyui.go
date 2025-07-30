@@ -1,3 +1,5 @@
+// Package services provides various services for the infinite dungeon application,
+// including ComfyUI integration for AI image generation.
 package services
 
 import (
@@ -19,55 +21,73 @@ import (
 )
 
 // ComfyUIService provides methods to interact with the ComfyUI WebSocket API.
+// It manages connections, workflow execution, and image generation through ComfyUI.
 type ComfyUIService struct {
-	running  bool
-	Config   *common.Config
-	BaseURL  string
-	clientID string
+	running  bool           // Current running state of the service
+	Config   *common.Config // Application configuration
+	BaseURL  string         // Base URL for ComfyUI API
+	clientID string         // Unique client identifier for WebSocket connections
 }
 
-// string enum for image ratio
+// ImageRatio represents the aspect ratio options for generated images.
 type ImageRatio string
 
 const (
-	ImageRatioSquare    ImageRatio = "SQUARE"
+	// ImageRatioSquare represents a 1:1 aspect ratio
+	ImageRatioSquare ImageRatio = "SQUARE"
+	// ImageRatioLandscape represents a wider than tall aspect ratio
 	ImageRatioLandscape ImageRatio = "LANDSCAPE"
-	ImageRatioPortrait  ImageRatio = "PORTRAIT"
+	// ImageRatioPortrait represents a taller than wide aspect ratio
+	ImageRatioPortrait ImageRatio = "PORTRAIT"
 )
 
+// ImageRequest contains all parameters needed to generate an image through ComfyUI.
 type ImageRequest struct {
-	WorkflowName  string
-	ContentPrompt string
-	Seed          int
-	Steps         int
-	Size          int
-	Ratio         ImageRatio
+	WorkflowName  string     // Name of the workflow file to use
+	ContentPrompt string     // Text prompt describing the desired image content
+	Seed          int        // Random seed for reproducible generation
+	Steps         int        // Number of diffusion steps for generation
+	Size          int        // Base size for image dimensions
+	Ratio         ImageRatio // Aspect ratio for the generated image
 }
 
+// ImageResult contains the generated image data returned from ComfyUI.
 type ImageResult struct {
-	Image *ebiten.Image
+	Image *ebiten.Image // Generated image ready for use in Ebiten
 }
 
+// AsyncImageResult represents the result of an asynchronous image generation request.
+// It contains either a successful result or an error, but not both.
+type AsyncImageResult struct {
+	Result *ImageResult // Generated image result (nil if error occurred)
+	Error  error        // Error that occurred during generation (nil if successful)
+}
+
+// OUTPUT_NODE_WORKFLOW_TYPE defines the ComfyUI node type used for image output.
 const OUTPUT_NODE_WORKFLOW_TYPE = "SaveImageWebsocket"
 
+// WSMessage represents a WebSocket message received from ComfyUI during workflow execution.
 type WSMessage struct {
-	Type string `json:"type"`
+	Type string `json:"type"` // Message type (e.g., "executing")
 	Data struct {
-		PromptID string  `json:"prompt_id"`
-		Node     *string `json:"node"`
+		PromptID string  `json:"prompt_id"` // Unique identifier for the prompt
+		Node     *string `json:"node"`      // Current executing node ID (nil when done)
 	} `json:"data"`
 }
 
+// PromptRequest represents the payload sent to ComfyUI to queue a workflow for execution.
 type PromptRequest struct {
-	Prompt   map[string]interface{} `json:"prompt"`
-	ClientID string                 `json:"client_id"`
+	Prompt   map[string]interface{} `json:"prompt"`    // The workflow definition
+	ClientID string                 `json:"client_id"` // Unique client identifier
 }
 
+// QueueResponse represents ComfyUI's response when a workflow is successfully queued.
 type QueueResponse struct {
-	PromptID string `json:"prompt_id"`
+	PromptID string `json:"prompt_id"` // Unique identifier assigned to the queued prompt
 }
 
-// NewComfyUIService creates a new ComfyUI WebSocket API service.
+// NewComfyUIService creates a new ComfyUI WebSocket API service instance.
+// It initializes the service with the provided configuration and generates a unique client ID.
 func NewComfyUIService(config *common.Config) *ComfyUIService {
 	return &ComfyUIService{
 		running:  false,
@@ -77,25 +97,34 @@ func NewComfyUIService(config *common.Config) *ComfyUIService {
 	}
 }
 
+// Start initializes and starts the ComfyUI service.
+// Returns an error if the service fails to start properly.
 func (s *ComfyUIService) Start() error {
 	log.Info("Starting ComfyUI WebSocket API service")
 	s.running = true
 	return nil
 }
 
+// Stop gracefully shuts down the ComfyUI service.
+// This method ensures proper cleanup of resources.
 func (s *ComfyUIService) Stop() {
 	log.Info("Stopping ComfyUI WebSocket API service")
 	s.running = false
 }
 
+// IsRunning returns the current running state of the ComfyUI service.
 func (s *ComfyUIService) IsRunning() bool {
 	return s.running
 }
 
+// NewImageFromPrompt generates a new image using the provided ImageRequest parameters.
+// This is the main entry point for custom image generation requests.
 func (s *ComfyUIService) NewImageFromPrompt(request ImageRequest) (*ImageResult, error) {
 	return s.processImageRequest(request)
 }
 
+// NewDefaultImageFromPrompt generates an image using predefined default parameters.
+// This method is useful for testing or when using standard generation settings.
 func (s *ComfyUIService) NewDefaultImageFromPrompt() (*ImageResult, error) {
 	return s.processImageRequest(ImageRequest{
 		WorkflowName:  "default_api.json",
@@ -107,6 +136,37 @@ func (s *ComfyUIService) NewDefaultImageFromPrompt() (*ImageResult, error) {
 	})
 }
 
+// AsyncNewImageFromPrompt generates an image using the provided ImageRequest parameters.
+// This is the main entry point for custom image generation requests. It returns a channel
+// that will receive the image result when it is ready. The channel is closed after sending
+// the result, so it's safe to use with range loops or single reads.
+func (s *ComfyUIService) AsyncNewImageFromPrompt(request ImageRequest) <-chan *AsyncImageResult {
+	ch := make(chan *AsyncImageResult, 1) // Buffered to prevent goroutine leak
+
+	go func() {
+		defer close(ch) // Always close the channel when done
+
+		image, err := s.processImageRequest(request)
+		if err != nil {
+			ch <- &AsyncImageResult{
+				Result: nil,
+				Error:  err,
+			}
+			return
+		}
+
+		ch <- &AsyncImageResult{
+			Result: image,
+			Error:  nil,
+		}
+	}()
+
+	return ch
+}
+
+// processImageRequest handles the core logic for image generation requests.
+// It loads the workflow, updates parameters, establishes WebSocket connection,
+// queues the prompt, and retrieves the generated image.
 func (s *ComfyUIService) processImageRequest(request ImageRequest) (*ImageResult, error) {
 	log.WithFields(log.Fields{
 		"workflow_name":  request.WorkflowName,
@@ -236,6 +296,8 @@ func (s *ComfyUIService) processImageRequest(request ImageRequest) (*ImageResult
 	}, nil
 }
 
+// loadPrompt reads and returns the workflow definition from the specified file.
+// The workflow file should be located in the configured workflow folder.
 func (s *ComfyUIService) loadPrompt(workflowName string) ([]byte, error) {
 	workflow, err := os.ReadFile(filepath.Join(s.Config.ComfyUI.WorkflowFolder, workflowName))
 	if err != nil {
@@ -244,7 +306,9 @@ func (s *ComfyUIService) loadPrompt(workflowName string) ([]byte, error) {
 	return workflow, nil
 }
 
-// Implement the Python get_images function logic
+// getImages listens on the WebSocket connection for workflow execution updates
+// and collects generated image data from the output nodes.
+// It follows the same logic as the Python implementation for compatibility.
 func (s *ComfyUIService) getImages(ws *websocket.Conn, promptId string) map[string][][]byte {
 	outputImages := make(map[string][][]byte)
 	currentNode := ""
@@ -290,6 +354,8 @@ func (s *ComfyUIService) getImages(ws *websocket.Conn, promptId string) map[stri
 	return outputImages
 }
 
+// findNodeByTitle searches through the workflow nodes to find one with the specified title
+// in its _meta field. Returns the node ID and node data if found, empty string and nil otherwise.
 func (s *ComfyUIService) findNodeByTitle(promptMap map[string]interface{}, title string) (string, map[string]interface{}) {
 	for nodeId, nodeInterface := range promptMap {
 		if nodeData, ok := nodeInterface.(map[string]interface{}); ok {
@@ -303,6 +369,9 @@ func (s *ComfyUIService) findNodeByTitle(promptMap map[string]interface{}, title
 	return "", nil
 }
 
+// updateNodeValue updates the 'value' field in the inputs of a node identified by its title.
+// This method is used to modify workflow parameters before execution.
+// Returns true if the node was found and updated successfully, false otherwise.
 func (s *ComfyUIService) updateNodeValue(promptMap map[string]interface{}, title string, value interface{}) bool {
 	nodeId, nodeData := s.findNodeByTitle(promptMap, title)
 	if nodeData != nil {
@@ -320,6 +389,9 @@ func (s *ComfyUIService) updateNodeValue(promptMap map[string]interface{}, title
 	return false
 }
 
+// queuePrompt sends a workflow to ComfyUI for execution via HTTP POST request.
+// It parses the workflow, creates the proper request payload, and returns the prompt ID
+// that can be used to track execution progress.
 func (s *ComfyUIService) queuePrompt(workflow []byte) (string, error) {
 	// Parse the workflow JSON
 	var prompt map[string]interface{}
@@ -369,6 +441,9 @@ func (s *ComfyUIService) queuePrompt(workflow []byte) (string, error) {
 	return queueResp.PromptID, nil
 }
 
+// updatePrompt modifies a workflow definition with the parameters from an ImageRequest.
+// It finds individual nodes by their _meta.title field and updates their input values.
+// Only non-zero/non-empty values are applied to avoid overwriting valid defaults.
 func (s *ComfyUIService) updatePrompt(prompt []byte, request ImageRequest) []byte {
 	var promptMap map[string]interface{}
 	if err := json.Unmarshal(prompt, &promptMap); err != nil {
