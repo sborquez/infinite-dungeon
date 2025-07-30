@@ -38,9 +38,9 @@ const (
 type ImageRequest struct {
 	WorkflowName  string
 	ContentPrompt string
-	StylePrompt   string
 	Seed          int
 	Steps         int
+	Size          int
 	Ratio         ImageRatio
 }
 
@@ -48,7 +48,7 @@ type ImageResult struct {
 	Image *ebiten.Image
 }
 
-const OUTPUT_NODE_WORKFLOW_ID = "11"
+const OUTPUT_NODE_WORKFLOW_TYPE = "SaveImageWebsocket"
 
 type WSMessage struct {
 	Type string `json:"type"`
@@ -98,12 +98,12 @@ func (s *ComfyUIService) NewImageFromPrompt(request ImageRequest) (*ImageResult,
 
 func (s *ComfyUIService) NewDefaultImageFromPrompt() (*ImageResult, error) {
 	return s.processImageRequest(ImageRequest{
-		WorkflowName:  "default.json",
+		WorkflowName:  "default_api.json",
 		ContentPrompt: "A beautiful space station in the sky, seen from the ground",
-		StylePrompt:   "A beautiful space station in the sky, seen from the ground",
 		Seed:          42,
 		Steps:         20,
-		Ratio:         ImageRatioLandscape,
+		Ratio:         ImageRatioPortrait,
+		Size:          512,
 	})
 }
 
@@ -111,11 +111,10 @@ func (s *ComfyUIService) processImageRequest(request ImageRequest) (*ImageResult
 	log.WithFields(log.Fields{
 		"workflow_name":  request.WorkflowName,
 		"content_prompt": request.ContentPrompt,
-		"style_prompt":   request.StylePrompt,
 		"seed":           request.Seed,
 		"steps":          request.Steps,
 		"ratio":          request.Ratio,
-	}).Info("Starting ComfyUI image request processing")
+	}).Info("Processing ComfyUI image request")
 
 	// Load the workflow from the assets folder
 	log.WithField("workflow_name", request.WorkflowName).Debug("Loading workflow from assets")
@@ -124,7 +123,8 @@ func (s *ComfyUIService) processImageRequest(request ImageRequest) (*ImageResult
 		log.WithError(err).WithField("workflow_name", request.WorkflowName).Error("Failed to load workflow")
 		return nil, err
 	}
-	log.WithField("prompt_size", len(prompt)).Debug("Successfully loaded workflow")
+	prompt = s.updatePrompt(prompt, request)
+	log.WithField("prompt_size", len(prompt)).Debug("Updated prompt")
 
 	// Open WebSocket connection
 	wsURL := strings.Replace(s.BaseURL, "http://", "ws://", 1)
@@ -137,10 +137,9 @@ func (s *ComfyUIService) processImageRequest(request ImageRequest) (*ImageResult
 	wsURL += "ws?clientId=" + s.clientID
 
 	log.WithFields(log.Fields{
-		"original_base_url": s.BaseURL,
-		"websocket_url":     wsURL,
-		"client_id":         s.clientID,
-	}).Info("Attempting WebSocket connection to ComfyUI")
+		"websocket_url": wsURL,
+		"client_id":     s.clientID,
+	}).Debug("Attempting WebSocket connection to ComfyUI")
 
 	ws, resp, err := websocket.DefaultDialer.Dial(wsURL, nil)
 	if err != nil {
@@ -159,7 +158,7 @@ func (s *ComfyUIService) processImageRequest(request ImageRequest) (*ImageResult
 		return nil, err
 	}
 	defer ws.Close()
-	log.Info("Successfully established WebSocket connection to ComfyUI")
+	log.Debug("WebSocket connection established")
 
 	// Send the workflow to the ComfyUI server
 	log.WithField("prompt_size", len(prompt)).Debug("Queueing prompt to ComfyUI")
@@ -168,7 +167,7 @@ func (s *ComfyUIService) processImageRequest(request ImageRequest) (*ImageResult
 		log.WithError(err).Error("Failed to queue prompt to ComfyUI")
 		return nil, err
 	}
-	log.WithField("prompt_id", promptId).Info("Successfully queued prompt to ComfyUI")
+	log.WithField("prompt_id", promptId).Debug("Prompt queued successfully")
 
 	// Get images using the Python function logic
 	log.WithField("prompt_id", promptId).Debug("Starting image retrieval from WebSocket")
@@ -183,7 +182,7 @@ func (s *ComfyUIService) processImageRequest(request ImageRequest) (*ImageResult
 			}
 			return total
 		}(),
-	}).Info("Retrieved images from ComfyUI")
+	}).Debug("Retrieved images from ComfyUI")
 
 	// Process the first image if available
 	var resultImage *ebiten.Image
@@ -215,10 +214,9 @@ func (s *ComfyUIService) processImageRequest(request ImageRequest) (*ImageResult
 				resultImage = ebiten.NewImageFromImage(decodedImg)
 
 				log.WithFields(log.Fields{
-					"node_id":      nodeId,
 					"image_width":  bounds.Dx(),
 					"image_height": bounds.Dy(),
-				}).Info("Successfully decoded and converted ComfyUI image")
+				}).Info("ComfyUI image generated successfully")
 
 				imageProcessed = true
 				break
@@ -227,13 +225,12 @@ func (s *ComfyUIService) processImageRequest(request ImageRequest) (*ImageResult
 	}
 
 	if !imageProcessed {
-		log.Warn("No images were processed from ComfyUI response, creating fallback image")
+		log.Warn("No images were processed from ComfyUI response, using fallback")
 		// Create fallback white image
 		resultImage = ebiten.NewImage(512, 512)
 		resultImage.Fill(color.White)
 	}
 
-	log.WithField("image_processed", imageProcessed).Info("ComfyUI image request processing completed")
 	return &ImageResult{
 		Image: resultImage,
 	}, nil
@@ -277,7 +274,8 @@ func (s *ComfyUIService) getImages(ws *websocket.Conn, promptId string) map[stri
 			}
 		} else if messageType == websocket.BinaryMessage {
 			// Handle binary message - collect image data
-			if currentNode == OUTPUT_NODE_WORKFLOW_ID {
+			// The currentNode will be the node ID (like "11"), not the class type
+			if currentNode == "11" { // Output node ID
 				// Skip first 8 bytes (header) like in Python version
 				if len(messageData) > 8 {
 					imageData := messageData[8:]
@@ -290,6 +288,36 @@ func (s *ComfyUIService) getImages(ws *websocket.Conn, promptId string) map[stri
 	}
 
 	return outputImages
+}
+
+func (s *ComfyUIService) findNodeByTitle(promptMap map[string]interface{}, title string) (string, map[string]interface{}) {
+	for nodeId, nodeInterface := range promptMap {
+		if nodeData, ok := nodeInterface.(map[string]interface{}); ok {
+			if meta, ok := nodeData["_meta"].(map[string]interface{}); ok {
+				if nodeTitle, ok := meta["title"].(string); ok && nodeTitle == title {
+					return nodeId, nodeData
+				}
+			}
+		}
+	}
+	return "", nil
+}
+
+func (s *ComfyUIService) updateNodeValue(promptMap map[string]interface{}, title string, value interface{}) bool {
+	nodeId, nodeData := s.findNodeByTitle(promptMap, title)
+	if nodeData != nil {
+		if inputs, ok := nodeData["inputs"].(map[string]interface{}); ok {
+			inputs["value"] = value
+			log.WithFields(log.Fields{
+				"node_id": nodeId,
+				"title":   title,
+				"value":   value,
+			}).Debug("Updated node value")
+			return true
+		}
+	}
+	log.WithField("title", title).Warn("Could not find node or inputs for title")
+	return false
 }
 
 func (s *ComfyUIService) queuePrompt(workflow []byte) (string, error) {
@@ -339,4 +367,45 @@ func (s *ComfyUIService) queuePrompt(workflow []byte) (string, error) {
 	}).Debug("Successfully queued prompt")
 
 	return queueResp.PromptID, nil
+}
+
+func (s *ComfyUIService) updatePrompt(prompt []byte, request ImageRequest) []byte {
+	var promptMap map[string]interface{}
+	if err := json.Unmarshal(prompt, &promptMap); err != nil {
+		log.WithError(err).Error("Failed to unmarshal prompt")
+		return prompt
+	}
+
+	// Update individual nodes by their _meta.title
+	if request.Ratio != "" {
+		s.updateNodeValue(promptMap, "Ratio", string(request.Ratio))
+	}
+	if request.ContentPrompt != "" {
+		s.updateNodeValue(promptMap, "ContentPrompt", request.ContentPrompt)
+	}
+	if request.Seed > 0 {
+		s.updateNodeValue(promptMap, "Seed", request.Seed)
+	}
+	if request.Steps > 0 {
+		s.updateNodeValue(promptMap, "Steps", request.Steps)
+	}
+	if request.Size > 0 {
+		s.updateNodeValue(promptMap, "Size", float64(request.Size))
+	}
+
+	// Debug log the updated request
+	log.WithFields(log.Fields{
+		"ratio":          request.Ratio,
+		"content_prompt": request.ContentPrompt,
+		"seed":           request.Seed,
+		"steps":          request.Steps,
+		"size":           request.Size,
+	}).Debug("Updated prompt with request values")
+
+	updatedPrompt, err := json.Marshal(promptMap)
+	if err != nil {
+		log.WithError(err).Error("Failed to marshal updated prompt")
+		return prompt
+	}
+	return updatedPrompt
 }

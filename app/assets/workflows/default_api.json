@@ -1,0 +1,476 @@
+{
+  "3": {
+    "inputs": {
+      "seed": [
+        "123",
+        0
+      ],
+      "steps": [
+        "125",
+        0
+      ],
+      "cfg": 8,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1,
+      "model": [
+        "4",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "dreamshaper_8.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": [
+        "144",
+        0
+      ],
+      "height": [
+        "145",
+        0
+      ],
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": [
+        "92",
+        0
+      ],
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": [
+        "91",
+        0
+      ],
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "11": {
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "SaveImageWebsocket",
+    "_meta": {
+      "title": "Output"
+    }
+  },
+  "90": {
+    "inputs": {
+      "value": "pixel, 3D render, starcraft 1 artstyle\n"
+    },
+    "class_type": "PrimitiveStringMultiline",
+    "_meta": {
+      "title": "PositivePrompt"
+    }
+  },
+  "91": {
+    "inputs": {
+      "value": "happy, natural environment, harmony, equality, peace, bright daylight, cartoonish, unrealistic"
+    },
+    "class_type": "PrimitiveStringMultiline",
+    "_meta": {
+      "title": "NegativePrompt"
+    }
+  },
+  "92": {
+    "inputs": {
+      "string_a": [
+        "124",
+        0
+      ],
+      "string_b": [
+        "90",
+        0
+      ],
+      "delimiter": ". "
+    },
+    "class_type": "StringConcatenate",
+    "_meta": {
+      "title": "Concatenate"
+    }
+  },
+  "121": {
+    "inputs": {
+      "value": 512
+    },
+    "class_type": "PrimitiveFloat",
+    "_meta": {
+      "title": "Size"
+    }
+  },
+  "122": {
+    "inputs": {
+      "value": "SQUARE"
+    },
+    "class_type": "PrimitiveString",
+    "_meta": {
+      "title": "Ratio"
+    }
+  },
+  "123": {
+    "inputs": {
+      "value": 1
+    },
+    "class_type": "PrimitiveInt",
+    "_meta": {
+      "title": "Seed"
+    }
+  },
+  "124": {
+    "inputs": {
+      "value": "An dark hole in the middle of a galaxy\n"
+    },
+    "class_type": "PrimitiveStringMultiline",
+    "_meta": {
+      "title": "ContentPrompt"
+    }
+  },
+  "125": {
+    "inputs": {
+      "value": 15
+    },
+    "class_type": "PrimitiveInt",
+    "_meta": {
+      "title": "Steps"
+    }
+  },
+  "126": {
+    "inputs": {
+      "string_a": [
+        "122",
+        0
+      ],
+      "string_b": "PORTRAIT",
+      "mode": "Equal",
+      "case_sensitive": false
+    },
+    "class_type": "StringCompare",
+    "_meta": {
+      "title": "Portraint"
+    }
+  },
+  "127": {
+    "inputs": {
+      "string_a": [
+        "122",
+        0
+      ],
+      "string_b": "LANDSCAPE",
+      "mode": "Equal",
+      "case_sensitive": false
+    },
+    "class_type": "StringCompare",
+    "_meta": {
+      "title": "Landscape"
+    }
+  },
+  "128": {
+    "inputs": {
+      "op": "Not",
+      "a": [
+        "126",
+        0
+      ]
+    },
+    "class_type": "CM_BoolUnaryOperation",
+    "_meta": {
+      "title": "BoolUnaryOperation"
+    }
+  },
+  "129": {
+    "inputs": {
+      "a": [
+        "126",
+        0
+      ]
+    },
+    "class_type": "CM_BoolToInt",
+    "_meta": {
+      "title": "BoolToInt"
+    }
+  },
+  "130": {
+    "inputs": {
+      "op": "Not",
+      "a": [
+        "127",
+        0
+      ]
+    },
+    "class_type": "CM_BoolUnaryOperation",
+    "_meta": {
+      "title": "BoolUnaryOperation"
+    }
+  },
+  "131": {
+    "inputs": {
+      "a": [
+        "127",
+        0
+      ]
+    },
+    "class_type": "CM_BoolToInt",
+    "_meta": {
+      "title": "BoolToInt"
+    }
+  },
+  "132": {
+    "inputs": {
+      "a": [
+        "128",
+        0
+      ]
+    },
+    "class_type": "CM_BoolToInt",
+    "_meta": {
+      "title": "BoolToInt"
+    }
+  },
+  "133": {
+    "inputs": {
+      "a": [
+        "129",
+        0
+      ]
+    },
+    "class_type": "CM_IntToFloat",
+    "_meta": {
+      "title": "IntToFloat"
+    }
+  },
+  "134": {
+    "inputs": {
+      "a": [
+        "130",
+        0
+      ]
+    },
+    "class_type": "CM_BoolToInt",
+    "_meta": {
+      "title": "BoolToInt"
+    }
+  },
+  "135": {
+    "inputs": {
+      "a": [
+        "131",
+        0
+      ]
+    },
+    "class_type": "CM_IntToFloat",
+    "_meta": {
+      "title": "IntToFloat"
+    }
+  },
+  "136": {
+    "inputs": {
+      "a": [
+        "132",
+        0
+      ]
+    },
+    "class_type": "CM_IntToFloat",
+    "_meta": {
+      "title": "IntToFloat"
+    }
+  },
+  "137": {
+    "inputs": {
+      "op": "Mul",
+      "a": [
+        "133",
+        0
+      ],
+      "b": 0.5630000000000002
+    },
+    "class_type": "CM_FloatBinaryOperation",
+    "_meta": {
+      "title": "FloatBinaryOperation"
+    }
+  },
+  "138": {
+    "inputs": {
+      "a": [
+        "134",
+        0
+      ]
+    },
+    "class_type": "CM_IntToFloat",
+    "_meta": {
+      "title": "IntToFloat"
+    }
+  },
+  "139": {
+    "inputs": {
+      "op": "Mul",
+      "a": [
+        "135",
+        0
+      ],
+      "b": 0.5630000000000002
+    },
+    "class_type": "CM_FloatBinaryOperation",
+    "_meta": {
+      "title": "FloatBinaryOperation"
+    }
+  },
+  "140": {
+    "inputs": {
+      "op": "Max",
+      "a": [
+        "136",
+        0
+      ],
+      "b": [
+        "137",
+        0
+      ]
+    },
+    "class_type": "CM_FloatBinaryOperation",
+    "_meta": {
+      "title": "FloatBinaryOperation"
+    }
+  },
+  "141": {
+    "inputs": {
+      "op": "Max",
+      "a": [
+        "138",
+        0
+      ],
+      "b": [
+        "139",
+        0
+      ]
+    },
+    "class_type": "CM_FloatBinaryOperation",
+    "_meta": {
+      "title": "FloatBinaryOperation"
+    }
+  },
+  "142": {
+    "inputs": {
+      "op": "Mul",
+      "a": [
+        "140",
+        0
+      ],
+      "b": [
+        "121",
+        0
+      ]
+    },
+    "class_type": "CM_FloatBinaryOperation",
+    "_meta": {
+      "title": "FloatBinaryOperation"
+    }
+  },
+  "143": {
+    "inputs": {
+      "op": "Mul",
+      "a": [
+        "141",
+        0
+      ],
+      "b": [
+        "121",
+        0
+      ]
+    },
+    "class_type": "CM_FloatBinaryOperation",
+    "_meta": {
+      "title": "FloatBinaryOperation"
+    }
+  },
+  "144": {
+    "inputs": {
+      "a": [
+        "142",
+        0
+      ]
+    },
+    "class_type": "CM_FloatToInt",
+    "_meta": {
+      "title": "FloatToInt"
+    }
+  },
+  "145": {
+    "inputs": {
+      "a": [
+        "143",
+        0
+      ]
+    },
+    "class_type": "CM_FloatToInt",
+    "_meta": {
+      "title": "FloatToInt"
+    }
+  }
+}

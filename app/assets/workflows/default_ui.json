@@ -1,0 +1,2502 @@
+{
+  "id": "fd165386-3ea5-4952-8ec4-9a4b83eb5e00",
+  "revision": 0,
+  "last_node_id": 145,
+  "last_link_id": 407,
+  "nodes": [
+    {
+      "id": 8,
+      "type": "VAEDecode",
+      "pos": [
+        1340,
+        130
+      ],
+      "size": [
+        140,
+        46
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 16
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            18
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.46",
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 3,
+      "type": "KSampler",
+      "pos": [
+        970,
+        130
+      ],
+      "size": [
+        270,
+        262
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 10
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 11
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 12
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 13
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": 403
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "widget": {
+            "name": "steps"
+          },
+          "link": 405
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            16
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.46",
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        761835595618635,
+        "randomize",
+        15,
+        8,
+        "euler",
+        "normal",
+        1
+      ]
+    },
+    {
+      "id": 92,
+      "type": "StringConcatenate",
+      "pos": [
+        160.26324462890625,
+        82.69243621826172
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "string_a",
+          "type": "STRING",
+          "widget": {
+            "name": "string_a"
+          },
+          "link": 404
+        },
+        {
+          "name": "string_b",
+          "type": "STRING",
+          "widget": {
+            "name": "string_b"
+          },
+          "link": 121
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            122
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.46",
+        "Node name for S&R": "StringConcatenate"
+      },
+      "widgets_values": [
+        "",
+        "",
+        ". "
+      ]
+    },
+    {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": [
+        465.1203918457031,
+        96.50009155273438
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 14
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": 122
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.46",
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 7,
+      "type": "CLIPTextEncode",
+      "pos": [
+        463.4150695800781,
+        152.7391357421875
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 15
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": 123
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.46",
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 11,
+      "type": "SaveImageWebsocket",
+      "pos": [
+        1580,
+        130
+      ],
+      "size": [
+        179.71542358398438,
+        246
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 18
+        }
+      ],
+      "outputs": [],
+      "title": "Output",
+      "properties": {
+        "Node name for S&R": "SaveImageWebsocket"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 90,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        -450.8019104003906,
+        -451.9471740722656
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            121
+          ]
+        }
+      ],
+      "title": "PositivePrompt",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.46",
+        "Node name for S&R": "PrimitiveStringMultiline"
+      },
+      "widgets_values": [
+        "pixel, 3D render, starcraft 1 artstyle\n"
+      ]
+    },
+    {
+      "id": 91,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        -453.5520324707031,
+        -189.63233947753906
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            123
+          ]
+        }
+      ],
+      "title": "NegativePrompt",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.46",
+        "Node name for S&R": "PrimitiveStringMultiline"
+      },
+      "widgets_values": [
+        "happy, natural environment, harmony, equality, peace, bright daylight, cartoonish, unrealistic"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        112.35804748535156,
+        -317.872802734375
+      ],
+      "size": [
+        270,
+        98
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            10
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            14,
+            15
+          ]
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            17
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.46",
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "dreamshaper_8.safetensors"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "EmptyLatentImage",
+      "pos": [
+        466.3802795410156,
+        255.1759490966797
+      ],
+      "size": [
+        270,
+        106
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": 406
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": 407
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.46",
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        512,
+        512,
+        1
+      ]
+    },
+    {
+      "id": 120,
+      "type": "workflow>Inputs",
+      "pos": [
+        -447.0723571777344,
+        57.43159484863281
+      ],
+      "size": [
+        400,
+        756
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Seed",
+          "type": "INT",
+          "links": [
+            403
+          ]
+        },
+        {
+          "name": "Prompt",
+          "type": "STRING",
+          "links": [
+            404
+          ]
+        },
+        {
+          "name": "Steps",
+          "type": "INT",
+          "links": [
+            405
+          ]
+        },
+        {
+          "name": "Width",
+          "type": "INT",
+          "links": [
+            406
+          ]
+        },
+        {
+          "name": "Height",
+          "type": "INT",
+          "links": [
+            407
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "workflow>Inputs"
+      },
+      "widgets_values": [
+        512,
+        "SQUARE",
+        1,
+        "fixed",
+        "An dark hole in the middle of a galaxy\n",
+        15,
+        "fixed",
+        "PORTRAIT",
+        "Equal",
+        false,
+        "LANDSCAPE",
+        "Equal",
+        false,
+        "Not",
+        "Not",
+        "Mul",
+        0.5630000000000002,
+        "Mul",
+        0.5630000000000002,
+        "Max",
+        "Max",
+        "Mul",
+        "Mul"
+      ]
+    }
+  ],
+  "links": [
+    [
+      10,
+      4,
+      0,
+      3,
+      0,
+      "MODEL"
+    ],
+    [
+      11,
+      6,
+      0,
+      3,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      12,
+      7,
+      0,
+      3,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      13,
+      5,
+      0,
+      3,
+      3,
+      "LATENT"
+    ],
+    [
+      14,
+      4,
+      1,
+      6,
+      0,
+      "CLIP"
+    ],
+    [
+      15,
+      4,
+      1,
+      7,
+      0,
+      "CLIP"
+    ],
+    [
+      16,
+      3,
+      0,
+      8,
+      0,
+      "LATENT"
+    ],
+    [
+      17,
+      4,
+      2,
+      8,
+      1,
+      "VAE"
+    ],
+    [
+      18,
+      8,
+      0,
+      11,
+      0,
+      "IMAGE"
+    ],
+    [
+      121,
+      90,
+      0,
+      92,
+      1,
+      "STRING"
+    ],
+    [
+      122,
+      92,
+      0,
+      6,
+      1,
+      "STRING"
+    ],
+    [
+      123,
+      91,
+      0,
+      7,
+      1,
+      "STRING"
+    ],
+    [
+      403,
+      120,
+      0,
+      3,
+      4,
+      "INT"
+    ],
+    [
+      404,
+      120,
+      1,
+      92,
+      0,
+      "STRING"
+    ],
+    [
+      405,
+      120,
+      2,
+      3,
+      5,
+      "INT"
+    ],
+    [
+      406,
+      120,
+      3,
+      5,
+      0,
+      "INT"
+    ],
+    [
+      407,
+      120,
+      4,
+      5,
+      1,
+      "INT"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.9849732675807638,
+      "offset": [
+        794.1770929087953,
+        76.01433797204966
+      ]
+    },
+    "frontendVersion": "1.23.4",
+    "groupNodes": {
+      "Inputs": {
+        "nodes": [
+          {
+            "id": -1,
+            "type": "PrimitiveFloat",
+            "pos": [
+              -2333.16064453125,
+              227.95472717285156
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "flags": {},
+            "order": 3,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "value",
+                "name": "value",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "value"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "FLOAT",
+                "name": "FLOAT",
+                "type": "FLOAT",
+                "links": []
+              }
+            ],
+            "title": "Size",
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.3.46",
+              "Node name for S&R": "PrimitiveFloat"
+            },
+            "widgets_values": [
+              512
+            ],
+            "index": 0
+          },
+          {
+            "id": -1,
+            "type": "PrimitiveString",
+            "pos": [
+              -2334.893798828125,
+              337.4229736328125
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "flags": {},
+            "order": 4,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "value",
+                "name": "value",
+                "type": "STRING",
+                "widget": {
+                  "name": "value"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "STRING",
+                "name": "STRING",
+                "type": "STRING",
+                "links": []
+              }
+            ],
+            "title": "Ratio",
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.3.46",
+              "Node name for S&R": "PrimitiveString"
+            },
+            "widgets_values": [
+              "SQUARE"
+            ],
+            "index": 1
+          },
+          {
+            "id": -1,
+            "type": "PrimitiveInt",
+            "pos": [
+              -2335.195068359375,
+              448.0072937011719
+            ],
+            "size": [
+              270,
+              82
+            ],
+            "flags": {},
+            "order": 5,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "value",
+                "name": "value",
+                "type": "INT",
+                "widget": {
+                  "name": "value"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "INT",
+                "name": "INT",
+                "type": "INT",
+                "links": []
+              }
+            ],
+            "title": "Seed",
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.3.46",
+              "Node name for S&R": "PrimitiveInt"
+            },
+            "widgets_values": [
+              0,
+              "fixed"
+            ],
+            "index": 2
+          },
+          {
+            "id": -1,
+            "type": "PrimitiveStringMultiline",
+            "pos": [
+              -2327.82861328125,
+              -136.01026916503906
+            ],
+            "size": [
+              266.2555847167969,
+              195.74623107910156
+            ],
+            "flags": {},
+            "order": 6,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "value",
+                "name": "value",
+                "type": "STRING",
+                "widget": {
+                  "name": "value"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "STRING",
+                "name": "STRING",
+                "type": "STRING",
+                "links": []
+              }
+            ],
+            "title": "ContentPrompt",
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.3.46",
+              "Node name for S&R": "PrimitiveStringMultiline"
+            },
+            "widgets_values": [
+              "An dark hole in the middle of a galaxy\n"
+            ],
+            "index": 3
+          },
+          {
+            "id": -1,
+            "type": "PrimitiveInt",
+            "pos": [
+              -2333.8369140625,
+              101.24092102050781
+            ],
+            "size": [
+              270,
+              82
+            ],
+            "flags": {
+              "collapsed": false
+            },
+            "order": 7,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "value",
+                "name": "value",
+                "type": "INT",
+                "widget": {
+                  "name": "value"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "INT",
+                "name": "INT",
+                "type": "INT",
+                "links": []
+              }
+            ],
+            "title": "Steps",
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.3.46",
+              "Node name for S&R": "PrimitiveInt"
+            },
+            "widgets_values": [
+              15,
+              "fixed"
+            ],
+            "index": 4
+          },
+          {
+            "id": -1,
+            "type": "StringCompare",
+            "pos": [
+              -3145.128662109375,
+              1922.42724609375
+            ],
+            "size": [
+              400,
+              200
+            ],
+            "flags": {},
+            "order": 9,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "string_a",
+                "name": "string_a",
+                "type": "STRING",
+                "widget": {
+                  "name": "string_a"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "string_b",
+                "name": "string_b",
+                "type": "STRING",
+                "widget": {
+                  "name": "string_b"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "mode",
+                "name": "mode",
+                "type": "COMBO",
+                "widget": {
+                  "name": "mode"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "case_sensitive",
+                "name": "case_sensitive",
+                "type": "BOOLEAN",
+                "widget": {
+                  "name": "case_sensitive"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "BOOLEAN",
+                "name": "BOOLEAN",
+                "type": "BOOLEAN",
+                "links": []
+              }
+            ],
+            "title": "Portraint",
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.3.46",
+              "Node name for S&R": "StringCompare"
+            },
+            "widgets_values": [
+              "",
+              "PORTRAIT",
+              "Equal",
+              false
+            ],
+            "index": 5
+          },
+          {
+            "id": -1,
+            "type": "StringCompare",
+            "pos": [
+              -3138.87939453125,
+              1639.9962158203125
+            ],
+            "size": [
+              400,
+              200
+            ],
+            "flags": {},
+            "order": 10,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "string_a",
+                "name": "string_a",
+                "type": "STRING",
+                "widget": {
+                  "name": "string_a"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "string_b",
+                "name": "string_b",
+                "type": "STRING",
+                "widget": {
+                  "name": "string_b"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "mode",
+                "name": "mode",
+                "type": "COMBO",
+                "widget": {
+                  "name": "mode"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "case_sensitive",
+                "name": "case_sensitive",
+                "type": "BOOLEAN",
+                "widget": {
+                  "name": "case_sensitive"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "BOOLEAN",
+                "name": "BOOLEAN",
+                "type": "BOOLEAN",
+                "links": []
+              }
+            ],
+            "title": "Landscape",
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.3.46",
+              "Node name for S&R": "StringCompare"
+            },
+            "widgets_values": [
+              "",
+              "LANDSCAPE",
+              "Equal",
+              false
+            ],
+            "index": 6
+          },
+          {
+            "id": -1,
+            "type": "CM_BoolUnaryOperation",
+            "pos": [
+              -2835.405517578125,
+              1061.2271728515625
+            ],
+            "size": [
+              270,
+              82
+            ],
+            "flags": {
+              "collapsed": true
+            },
+            "order": 12,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "op",
+                "name": "op",
+                "type": "COMBO",
+                "widget": {
+                  "name": "op"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "BOOLEAN",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "BOOLEAN",
+                "name": "BOOLEAN",
+                "type": "BOOLEAN",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_BoolUnaryOperation"
+            },
+            "widgets_values": [
+              "Not",
+              false
+            ],
+            "index": 7
+          },
+          {
+            "id": -1,
+            "type": "CM_BoolToInt",
+            "pos": [
+              -2826.826171875,
+              1172.607666015625
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "flags": {
+              "collapsed": true
+            },
+            "order": 13,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "BOOLEAN",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "INT",
+                "name": "INT",
+                "type": "INT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_BoolToInt"
+            },
+            "widgets_values": [
+              false
+            ],
+            "index": 8
+          },
+          {
+            "id": -1,
+            "type": "CM_BoolUnaryOperation",
+            "pos": [
+              -2875.542724609375,
+              751.1029663085938
+            ],
+            "size": [
+              270,
+              82
+            ],
+            "flags": {
+              "collapsed": true
+            },
+            "order": 14,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "op",
+                "name": "op",
+                "type": "COMBO",
+                "widget": {
+                  "name": "op"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "BOOLEAN",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "BOOLEAN",
+                "name": "BOOLEAN",
+                "type": "BOOLEAN",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_BoolUnaryOperation"
+            },
+            "widgets_values": [
+              "Not",
+              false
+            ],
+            "index": 9
+          },
+          {
+            "id": -1,
+            "type": "CM_BoolToInt",
+            "pos": [
+              -2838.947998046875,
+              877.0474243164062
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "flags": {
+              "collapsed": true
+            },
+            "order": 15,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "BOOLEAN",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "INT",
+                "name": "INT",
+                "type": "INT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_BoolToInt"
+            },
+            "widgets_values": [
+              false
+            ],
+            "index": 10
+          },
+          {
+            "id": -1,
+            "type": "CM_BoolToInt",
+            "pos": [
+              -2620.510009765625,
+              1065.63427734375
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "flags": {
+              "collapsed": true
+            },
+            "order": 17,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "BOOLEAN",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "INT",
+                "name": "INT",
+                "type": "INT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_BoolToInt"
+            },
+            "widgets_values": [
+              false
+            ],
+            "index": 11
+          },
+          {
+            "id": -1,
+            "type": "CM_IntToFloat",
+            "pos": [
+              -2690.262451171875,
+              1150.21728515625
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "flags": {
+              "collapsed": false
+            },
+            "order": 18,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "INT",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "FLOAT",
+                "name": "FLOAT",
+                "type": "FLOAT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_IntToFloat"
+            },
+            "widgets_values": [
+              0
+            ],
+            "index": 12
+          },
+          {
+            "id": -1,
+            "type": "CM_BoolToInt",
+            "pos": [
+              -2660.64794921875,
+              755.51025390625
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "flags": {
+              "collapsed": true
+            },
+            "order": 19,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "BOOLEAN",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "INT",
+                "name": "INT",
+                "type": "INT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_BoolToInt"
+            },
+            "widgets_values": [
+              false
+            ],
+            "index": 13
+          },
+          {
+            "id": -1,
+            "type": "CM_IntToFloat",
+            "pos": [
+              -2693.886962890625,
+              853.7620239257812
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "flags": {
+              "collapsed": false
+            },
+            "order": 20,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "INT",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "FLOAT",
+                "name": "FLOAT",
+                "type": "FLOAT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_IntToFloat"
+            },
+            "widgets_values": [
+              0
+            ],
+            "index": 14
+          },
+          {
+            "id": -1,
+            "type": "CM_IntToFloat",
+            "pos": [
+              -2398.6083984375,
+              1023.9727172851562
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "flags": {
+              "collapsed": false
+            },
+            "order": 21,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "INT",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "FLOAT",
+                "name": "FLOAT",
+                "type": "FLOAT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_IntToFloat"
+            },
+            "widgets_values": [
+              0
+            ],
+            "index": 15
+          },
+          {
+            "id": -1,
+            "type": "CM_FloatBinaryOperation",
+            "pos": [
+              -2391.3583984375,
+              1148.554931640625
+            ],
+            "size": [
+              270,
+              106
+            ],
+            "flags": {},
+            "order": 22,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "op",
+                "name": "op",
+                "type": "COMBO",
+                "widget": {
+                  "name": "op"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "b",
+                "name": "b",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "b"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "FLOAT",
+                "name": "FLOAT",
+                "type": "FLOAT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_FloatBinaryOperation"
+            },
+            "widgets_values": [
+              "Mul",
+              0,
+              0.5630000000000002
+            ],
+            "index": 16
+          },
+          {
+            "id": -1,
+            "type": "CM_IntToFloat",
+            "pos": [
+              -2403.575927734375,
+              702.8903198242188
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "flags": {
+              "collapsed": false
+            },
+            "order": 23,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "INT",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "FLOAT",
+                "name": "FLOAT",
+                "type": "FLOAT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_IntToFloat"
+            },
+            "widgets_values": [
+              0
+            ],
+            "index": 17
+          },
+          {
+            "id": -1,
+            "type": "CM_FloatBinaryOperation",
+            "pos": [
+              -2394.930419921875,
+              830.1632080078125
+            ],
+            "size": [
+              270,
+              106
+            ],
+            "flags": {},
+            "order": 24,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "op",
+                "name": "op",
+                "type": "COMBO",
+                "widget": {
+                  "name": "op"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "b",
+                "name": "b",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "b"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "FLOAT",
+                "name": "FLOAT",
+                "type": "FLOAT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_FloatBinaryOperation"
+            },
+            "widgets_values": [
+              "Mul",
+              0,
+              0.5630000000000002
+            ],
+            "index": 18
+          },
+          {
+            "id": -1,
+            "type": "CM_FloatBinaryOperation",
+            "pos": [
+              -1944.5498046875,
+              1146.6231689453125
+            ],
+            "size": [
+              270,
+              106
+            ],
+            "flags": {
+              "collapsed": false
+            },
+            "order": 25,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "op",
+                "name": "op",
+                "type": "COMBO",
+                "widget": {
+                  "name": "op"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "b",
+                "name": "b",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "b"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "FLOAT",
+                "name": "FLOAT",
+                "type": "FLOAT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_FloatBinaryOperation"
+            },
+            "widgets_values": [
+              "Max",
+              0,
+              0
+            ],
+            "index": 19
+          },
+          {
+            "id": -1,
+            "type": "CM_FloatBinaryOperation",
+            "pos": [
+              -1925.8250732421875,
+              755.501220703125
+            ],
+            "size": [
+              270,
+              106
+            ],
+            "flags": {
+              "collapsed": false
+            },
+            "order": 26,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "op",
+                "name": "op",
+                "type": "COMBO",
+                "widget": {
+                  "name": "op"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "b",
+                "name": "b",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "b"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "FLOAT",
+                "name": "FLOAT",
+                "type": "FLOAT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_FloatBinaryOperation"
+            },
+            "widgets_values": [
+              "Max",
+              0,
+              0
+            ],
+            "index": 20
+          },
+          {
+            "id": -1,
+            "type": "CM_FloatBinaryOperation",
+            "pos": [
+              -1681.9971923828125,
+              1693.6202392578125
+            ],
+            "size": [
+              270,
+              106
+            ],
+            "flags": {},
+            "order": 27,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "op",
+                "name": "op",
+                "type": "COMBO",
+                "widget": {
+                  "name": "op"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "b",
+                "name": "b",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "b"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "FLOAT",
+                "name": "FLOAT",
+                "type": "FLOAT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_FloatBinaryOperation"
+            },
+            "widgets_values": [
+              "Mul",
+              0,
+              0
+            ],
+            "index": 21
+          },
+          {
+            "id": -1,
+            "type": "CM_FloatBinaryOperation",
+            "pos": [
+              -1678.816162109375,
+              1869.0767822265625
+            ],
+            "size": [
+              270,
+              106
+            ],
+            "flags": {},
+            "order": 28,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "op",
+                "name": "op",
+                "type": "COMBO",
+                "widget": {
+                  "name": "op"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "b",
+                "name": "b",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "b"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "FLOAT",
+                "name": "FLOAT",
+                "type": "FLOAT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_FloatBinaryOperation"
+            },
+            "widgets_values": [
+              "Mul",
+              0,
+              0
+            ],
+            "index": 22
+          },
+          {
+            "id": -1,
+            "type": "CM_FloatToInt",
+            "pos": [
+              -1332.328369140625,
+              1592.328857421875
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "flags": {},
+            "order": 29,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "INT",
+                "name": "INT",
+                "type": "INT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_FloatToInt"
+            },
+            "widgets_values": [
+              0
+            ],
+            "index": 23
+          },
+          {
+            "id": -1,
+            "type": "CM_FloatToInt",
+            "pos": [
+              -1264.7137451171875,
+              1911.0511474609375
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "flags": {},
+            "order": 30,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "a",
+                "name": "a",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "a"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "INT",
+                "name": "INT",
+                "type": "INT",
+                "links": []
+              }
+            ],
+            "properties": {
+              "cnr_id": "ComfyMath",
+              "ver": "c01177221c31b8e5fbc062778fc8254aeb541638",
+              "Node name for S&R": "CM_FloatToInt"
+            },
+            "widgets_values": [
+              0
+            ],
+            "index": 24
+          }
+        ],
+        "links": [
+          [
+            1,
+            0,
+            5,
+            0,
+            122,
+            "STRING"
+          ],
+          [
+            1,
+            0,
+            6,
+            0,
+            122,
+            "STRING"
+          ],
+          [
+            5,
+            0,
+            7,
+            1,
+            126,
+            "BOOLEAN"
+          ],
+          [
+            5,
+            0,
+            8,
+            0,
+            126,
+            "BOOLEAN"
+          ],
+          [
+            6,
+            0,
+            9,
+            1,
+            127,
+            "BOOLEAN"
+          ],
+          [
+            6,
+            0,
+            10,
+            0,
+            127,
+            "BOOLEAN"
+          ],
+          [
+            7,
+            0,
+            11,
+            0,
+            128,
+            "BOOLEAN"
+          ],
+          [
+            8,
+            0,
+            12,
+            0,
+            129,
+            "INT"
+          ],
+          [
+            9,
+            0,
+            13,
+            0,
+            130,
+            "BOOLEAN"
+          ],
+          [
+            10,
+            0,
+            14,
+            0,
+            131,
+            "INT"
+          ],
+          [
+            11,
+            0,
+            15,
+            0,
+            132,
+            "INT"
+          ],
+          [
+            12,
+            0,
+            16,
+            1,
+            133,
+            "FLOAT"
+          ],
+          [
+            13,
+            0,
+            17,
+            0,
+            134,
+            "INT"
+          ],
+          [
+            14,
+            0,
+            18,
+            1,
+            135,
+            "FLOAT"
+          ],
+          [
+            15,
+            0,
+            19,
+            1,
+            136,
+            "FLOAT"
+          ],
+          [
+            16,
+            0,
+            19,
+            2,
+            137,
+            "FLOAT"
+          ],
+          [
+            17,
+            0,
+            20,
+            1,
+            138,
+            "FLOAT"
+          ],
+          [
+            18,
+            0,
+            20,
+            2,
+            139,
+            "FLOAT"
+          ],
+          [
+            19,
+            0,
+            21,
+            1,
+            140,
+            "FLOAT"
+          ],
+          [
+            0,
+            0,
+            21,
+            2,
+            121,
+            "FLOAT"
+          ],
+          [
+            20,
+            0,
+            22,
+            1,
+            141,
+            "FLOAT"
+          ],
+          [
+            0,
+            0,
+            22,
+            2,
+            121,
+            "FLOAT"
+          ],
+          [
+            21,
+            0,
+            23,
+            0,
+            142,
+            "FLOAT"
+          ],
+          [
+            22,
+            0,
+            24,
+            0,
+            143,
+            "FLOAT"
+          ]
+        ],
+        "external": [
+          [
+            2,
+            0,
+            "INT"
+          ],
+          [
+            3,
+            0,
+            "STRING"
+          ],
+          [
+            4,
+            0,
+            "INT"
+          ],
+          [
+            23,
+            0,
+            "INT"
+          ],
+          [
+            24,
+            0,
+            "INT"
+          ]
+        ],
+        "config": {
+          "0": {
+            "input": {
+              "value": {
+                "name": "Size value"
+              }
+            }
+          },
+          "1": {
+            "input": {
+              "value": {
+                "name": "Ratio option"
+              }
+            }
+          },
+          "2": {
+            "output": {
+              "0": {
+                "name": "Seed"
+              }
+            },
+            "input": {
+              "value": {
+                "name": "Seed"
+              }
+            }
+          },
+          "3": {
+            "input": {
+              "value": {
+                "name": "Prompt"
+              }
+            },
+            "output": {
+              "0": {
+                "name": "Prompt"
+              }
+            }
+          },
+          "4": {
+            "output": {
+              "0": {
+                "name": "Steps"
+              }
+            }
+          },
+          "5": {
+            "input": {
+              "string_a": {
+                "visible": false
+              },
+              "string_b": {
+                "visible": false
+              },
+              "mode": {
+                "visible": false
+              },
+              "case_sensitive": {
+                "visible": false
+              }
+            }
+          },
+          "6": {
+            "input": {
+              "string_a": {
+                "visible": false
+              },
+              "string_b": {
+                "visible": false
+              },
+              "mode": {
+                "visible": false
+              },
+              "case_sensitive": {
+                "visible": false
+              }
+            }
+          },
+          "7": {
+            "input": {
+              "op": {
+                "visible": false
+              },
+              "a": {
+                "visible": false
+              }
+            }
+          },
+          "8": {
+            "input": {
+              "a": {
+                "visible": false
+              }
+            }
+          },
+          "9": {
+            "input": {
+              "op": {
+                "visible": false
+              },
+              "a": {
+                "visible": false
+              }
+            }
+          },
+          "10": {
+            "input": {
+              "a": {
+                "visible": false
+              }
+            }
+          },
+          "11": {
+            "input": {
+              "a": {
+                "visible": false
+              }
+            }
+          },
+          "12": {
+            "input": {
+              "a": {
+                "visible": false
+              }
+            }
+          },
+          "13": {
+            "input": {
+              "a": {
+                "visible": false
+              }
+            }
+          },
+          "14": {
+            "input": {
+              "a": {
+                "visible": false
+              }
+            }
+          },
+          "15": {
+            "input": {
+              "a": {
+                "visible": false
+              }
+            }
+          },
+          "16": {
+            "input": {
+              "op": {
+                "visible": false
+              },
+              "a": {
+                "visible": false
+              },
+              "b": {
+                "visible": false
+              }
+            }
+          },
+          "17": {
+            "input": {
+              "a": {
+                "visible": false
+              }
+            }
+          },
+          "18": {
+            "input": {
+              "op": {
+                "visible": false
+              },
+              "a": {
+                "visible": false
+              },
+              "b": {
+                "visible": false
+              }
+            }
+          },
+          "19": {
+            "input": {
+              "op": {
+                "visible": false
+              },
+              "a": {
+                "visible": false
+              },
+              "b": {
+                "visible": false
+              }
+            }
+          },
+          "20": {
+            "input": {
+              "op": {
+                "visible": false
+              },
+              "a": {
+                "visible": false
+              },
+              "b": {
+                "visible": false
+              }
+            }
+          },
+          "21": {
+            "input": {
+              "op": {
+                "visible": false
+              },
+              "a": {
+                "visible": false
+              },
+              "b": {
+                "visible": false
+              }
+            }
+          },
+          "22": {
+            "input": {
+              "op": {
+                "visible": false
+              },
+              "a": {
+                "visible": false
+              },
+              "b": {
+                "visible": false
+              }
+            }
+          },
+          "23": {
+            "input": {
+              "a": {
+                "visible": false
+              }
+            },
+            "output": {
+              "0": {
+                "name": "Width"
+              }
+            }
+          },
+          "24": {
+            "input": {
+              "a": {
+                "visible": false
+              }
+            },
+            "output": {
+              "0": {
+                "name": "Height"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "version": 0.4
+}
